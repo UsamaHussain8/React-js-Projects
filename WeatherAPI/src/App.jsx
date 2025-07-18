@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
-  const API_KEY = "4fa3df17af0c3d7ee79623f2fb00b7ce"
+  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY
 
   const [city, setCity] = useState("")
   const [lat, setLat] = useState(null)
@@ -38,7 +38,7 @@ function App() {
   useEffect(() => {
     if(city.trim() === '')  return;
 
-    fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=minutely,hourly&appid=${API_KEY}`)
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,weathercode`)
     .then((response) => response.json())
     .then((data) => {
       if (data.length > 0) {
