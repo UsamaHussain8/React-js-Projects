@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
-  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY
+  const GEOLOCATION_API_KEY = import.meta.env.VITE_GEOLOCATION_API_KEY
+  const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY
 
   const [city, setCity] = useState("")
   const [lat, setLat] = useState(null)
@@ -10,17 +11,17 @@ function App() {
 
   useEffect(() => {
     if (city.trim() === "") return;
-
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${API_KEY}`)
+    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${GEOLOCATION_API_KEY}`)
     .then((response) => {
       return response.json()
     })
     .then((data) => {
       if (data.length > 0) {
-        setLat(data[0].lat)
-        setLong(data[0].lon)
-        console.log({lat: lat, long: long})
-        return ({lat: lat, long: long}) 
+        const latitude = data[0].lat
+        const longitude = data[0].lon
+        setLat(latitude)
+        setLong(longitude)
+        return ({lat: latitude, long: longitude}) 
       }
       else {
         console.log("No results found for the city you entered...")
@@ -38,12 +39,19 @@ function App() {
   useEffect(() => {
     if(city.trim() === '')  return;
 
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,weathercode`)
-    .then((response) => response.json())
+    fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=hourly,minutely&appid=${WEATHER_API_KEY}`)
+    .then((response) =>  {
+      console.log(response)
+      return response.json()
+  })
     .then((data) => {
-      if (data.length > 0) {
-        console.log({temp: data.current.temp, feels_like_temp: data.current.feels_like, humidity: data.current.humidity, wind_speed:data.current.wind_speed})
-        return ({lat: lat, long: long}) 
+      if (data) {
+        console.log(data)
+        const sunriseTime = new Date(data.current.sunrise * 1000)
+        const temp_celsius = Math.round((data.current.temp - 273.15) * 100.0) / 100;
+        const feels_like_temp_celsius = Math.round((data.current.feels_like - 273.15) * 100.0) / 100;
+        console.log({sunrise: sunriseTime.toLocaleTimeString(), temp: temp_celsius, feels_like_temp: feels_like_temp_celsius, 
+                    humidity: data.current.humidity, wind_speed:data.current.wind_speed, description: data.current.weather[0].description})
       }
       else {
         console.log(`Sorry...Weather details could not be fetched for ${city}...`)
@@ -61,18 +69,6 @@ function App() {
       setCity(cityName)
     }
   }
-
-  // function getCityCoordinates() {
-  //   fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${API_KEY}`)
-  //   .then((response) => {
-  //     return response.json()
-  //   })
-  //   .then((data) => {
-  //     setLat(data.lat)
-  //     setLong(data.long)
-  //     return ({lat: data.lat, long: data.long}) 
-  //   })
-  // }
 
   return (
     <>
