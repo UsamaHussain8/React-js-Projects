@@ -48,7 +48,7 @@ function App() {
     <>
       <h2 className="text-3xl">Weather Forecast</h2>
       <label htmlFor="city" className="block my-4 text-lg/6 font-medium text-white-900">
-        Enter City Name
+        Enter your City
       </label>
       <input
             id="city"
