@@ -2,30 +2,6 @@ import { useState, useEffect } from "react";
 
 const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY
 
-function getDayName(day_index) {
-    let day = '';
-    switch(day_index) {
-        case 1:
-            day = "Monday"; break;
-        case 2:
-            day = "Tuesday"; break;
-        case 3:
-            day = "Wednesday"; break;
-        case 4:
-            day = "Thursday"; break;
-        case 5:
-            day = "Friday"; break;
-        case 6:
-            day = "Saturday"; break;
-        case 7:
-            day = "Sunday"; break;
-        default:
-            day = "NA"
-    }
-
-    return day;
-}
-
 function Weather({ city, lat, long }) {
     const [weatherData, setWeatherData] = useState({
     current: null,
@@ -107,6 +83,30 @@ function Weather({ city, lat, long }) {
         </div>
     </>
   )
+}
+
+function getDayName(day_index) {
+    let day = '';
+    switch(day_index) {
+        case 1:
+            day = "Monday"; break;
+        case 2:
+            day = "Tuesday"; break;
+        case 3:
+            day = "Wednesday"; break;
+        case 4:
+            day = "Thursday"; break;
+        case 5:
+            day = "Friday"; break;
+        case 6:
+            day = "Saturday"; break;
+        case 7:
+            day = "Sunday"; break;
+        default:
+            day = "NA"
+    }
+
+    return day;
 }
 
 export default Weather
